@@ -9,6 +9,9 @@ class MessageController extends BaseController
 {
     public function getActiveUserMessages($page = 1)
     {
+        $sort = $this->request->getGet('sort') ?? 'id';
+        $order = $this->request->getGet('order') ?? 'asc';
+
         $user = new User();
         $message = new Message();
 
@@ -18,31 +21,34 @@ class MessageController extends BaseController
         $perPage = 3; // Number of comments per page
         $offset = ($page - 1) * $perPage;
 
-        //echo "Page: $page, Per Page: $perPage, Offset: $offset";
-
-        $messages = $message->select('user.username, user.userimage, message.content, message.publication_date')
+        $messages = $message->select('user.username, user.userimage, message.id, message.content, message.publication_date, message.is_active')
             ->join('user', 'user.id = message.user_id')
             ->whereIn('message.user_id', $activeUserIds)
+            ->where('message.is_active', 1)
+            ->orderBy("message.$sort", $order)
             ->limit($perPage, $offset)
             ->get()
             ->getResultArray();
 
-        //echo $message->getLastQuery();
-
-        $totalMessages = $message->whereIn('message.user_id', $activeUserIds)->countAllResults();
+        $totalMessages = $message->whereIn('message.user_id', $activeUserIds)
+            ->where('message.is_active', 1)
+            ->countAllResults();
         $totalPages = ceil($totalMessages / $perPage);
 
         return view('welcome_message', [
             'messages' => $messages,
             'users' => $activeUsers,
             'currentPage' => $page,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'sort' => $sort,
+            'order' => $order
         ]);
     }
 
+
     public function addMessage()
     {
-        $messageModel = new Message();
+        $message = new Message();
 
         $data = [
             'user_id' => $this->request->getPost('user_id'),
@@ -50,8 +56,21 @@ class MessageController extends BaseController
             'publication_date' => date('Y-m-d H:i:s')
         ];
 
-        $messageModel->insert($data);
+        $message->insert($data);
 
-        return redirect()->to('/messages/1');
+        return $this->response->setJSON(['status' => 'success']);
+    }
+
+    public function deleteMessage($id)
+    {
+        $message = new Message();
+
+        // Обновление поля is_active
+        $message->update($id, ['is_active' => 0]);
+
+        // Возвращаем JSON ответ для успешного запроса
+        return $this->response->setJSON(['status' => 'success']);
     }
 }
+
+?>
