@@ -7,6 +7,11 @@ use App\Models\User;
 
 class MessageController extends BaseController
 {
+    public function __construct()
+    {
+        $this->session = \Config\Services::session();
+    }
+
     public function getActiveUserMessages($page = 1)
     {
         $sort = $this->request->getGet('sort') ?? 'id';
@@ -18,7 +23,7 @@ class MessageController extends BaseController
         $activeUsers = $user->where('is_active', 1)->findAll();
         $activeUserIds = array_column($activeUsers, 'id');
 
-        $perPage = 3; // Number of comments per page
+        $perPage = 3;
         $offset = ($page - 1) * $perPage;
 
         $messages = $message->select('user.username, user.userimage, message.id, message.content, message.publication_date, message.is_active')
@@ -35,13 +40,16 @@ class MessageController extends BaseController
             ->countAllResults();
         $totalPages = ceil($totalMessages / $perPage);
 
+        $currentUser = $this->session->get('user');
+
         return view('welcome_message', [
             'messages' => $messages,
             'users' => $activeUsers,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'sort' => $sort,
-            'order' => $order
+            'order' => $order,
+            'currentUser' => $currentUser
         ]);
     }
 

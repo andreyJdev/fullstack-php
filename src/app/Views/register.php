@@ -16,15 +16,15 @@
         <?php endforeach ?>
     </ul>
 <?php endif ?>
-<form action="/register/store" method="post">
+<form action="/register/new_user" method="post">
     <label for="username">Имя пользователя:</label>
-    <input type="text" name="username" id="username" value="<?= old('username') ?>"><br>
+    <input type="text" name="username" id="username" value="<?= old('username') ?>" required><br>
 
     <label for="email">Email:</label>
-    <input type="text" name="email" id="email" value="<?= old('email') ?>"><br>
+    <input type="email" name="email" id="email" value="<?= old('email') ?>" required><br>
 
     <label for="password">Пароль:</label>
-    <input type="password" name="password" id="password"><br>
+    <input type="password" name="password" id="password" required><br>
 
     <button type="submit">Зарегистрироваться</button>
 </form>

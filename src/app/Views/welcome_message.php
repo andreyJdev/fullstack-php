@@ -29,7 +29,22 @@
         max-width: 600px;
     }
 </style>
-
+<div class="header">
+    <?php if (isset($currentUser) && !empty($currentUser)): ?>
+        <!-- Если пользователь авторизован -->
+        <div class="user-info">
+            <strong>Вы вошли как: <?= $currentUser['username'] ?></strong>
+        </div>
+        <div>
+            <a href="<?= base_url('/logout') ?>">Выйти</a>
+        </div>
+    <?php else: ?>
+        <!-- Если пользователь не авторизован -->
+        <div>
+            <a href="<?= base_url('/login') ?>">Войти</a>
+        </div>
+    <?php endif; ?>
+</div>
 <div class="sort-options">
     <span>Сортировка: </span>
     <a href="<?php echo base_url('messages/' . $currentPage . '?sort=id&order=' . $order); ?>">По идентификатору
