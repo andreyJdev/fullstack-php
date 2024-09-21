@@ -17,7 +17,7 @@ CREATE TABLE `message` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `message` (`id`, `content`, `publication_date`, `is_active`, `user_id`) VALUES
 (1,	'Эти истории передавались из уст в уста, завораживая слушателей и вдохновляя их следовать своим мечтам и искать свои собственные приключения, зная, что мир полон чудес, ждущих своего открытия.',	'2024-09-19 21:31:18',	CONV('1', 2, 10) + 0,	4),
@@ -38,24 +38,23 @@ INSERT INTO `message` (`id`, `content`, `publication_date`, `is_active`, `user_i
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `username` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `userimage` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `prem_level` tinyint DEFAULT '1',
+  `perm_level` tinyint DEFAULT '1',
   `is_active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `user` (`id`, `email`, `username`, `password`, `userimage`, `prem_level`, `is_active`) VALUES
+INSERT INTO `user` (`id`, `email`, `username`, `password`, `userimage`, `perm_level`, `is_active`) VALUES
 (1,	'1',	'Андрей Разработчик',	'',	'',	10,	CONV('1', 2, 10) + 0),
 (2,	'2',	'Администратор сайта',	'',	'',	10,	CONV('1', 2, 10) + 0),
 (3,	'3',	'Support',	'',	'',	7,	CONV('1', 2, 10) + 0),
 (4,	'4',	'Community Manager',	'',	'',	5,	CONV('1', 2, 10) + 0),
 (5,	'5',	'Аноним',	'',	'',	1,	CONV('1', 2, 10) + 0),
 (6,	'6',	'Владелец блога',	'',	'',	4,	CONV('1', 2, 10) + 0),
-(9,	'andrey.jdev@gmail.com',	'Andrey',	'$2y$10$KtdZjlFBon75QySpp5AweeycLahMylHvMUbJAxGFOGMKJ4aspJqW2',	NULL,	1,	CONV('1', 2, 10) + 0),
-(10,	'andrey.jdev@gmail.co',	'Andrey',	'$2y$10$jdUa/T/r4wBakqSO8vnYb.zQN9pkf9zaKTNueZJqvKervNdrJo8fK',	NULL,	1,	CONV('1', 2, 10) + 0);
+(12,	'andrey.jdev@gmail.com',	'AndreyJdev',	'$2y$10$Apnq2ita/4rupxnKLeSateK8ruQEEhySTL6Tee4ApaNmnu1IWo9ba',	NULL,	10,	CONV('1', 2, 10) + 0);
 
--- 2024-09-21 12:18:58
+-- 2024-09-21 15:02:54
