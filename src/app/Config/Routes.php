@@ -5,9 +5,10 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-//$routes->get('/', 'Home::index');
+$routes->get('/', 'HomeController::index');
 $routes->get('messages/(:num)', 'MessageController::getActiveUserMessages/$1');
 $routes->get('messages/(:num)/(:alpha)/(:alpha)', 'MessageController::getActiveUserMessages/$1/$2/$3');
+$routes->get('messages/check_auth', 'MessageController::checkAuth');
 $routes->post('messages/delete/(:num)', 'MessageController::deleteMessage/$1');
 $routes->post('messages/add', 'MessageController::addMessage');
 $routes->get('register', 'RegisterController::register');

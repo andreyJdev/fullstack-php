@@ -1,65 +1,4 @@
-# Тестовое задание на основе Docker и CodeIgniter для Fullstack разработчика
-
-## Первоначальная настройка
-
--   Устанавливаем Docker c [официального сайта](https://www.docker.com/products/docker-desktop) и [Docker Compose](https://docs.docker.com/compose/install/);
--   Для пользователей Windows дополнительно необходимо установить виртуальное ядро Linux, следуя данной [инструкции](https://docs.docker.com/desktop/install/windows-install/);
--   Собираем контейнер командой в папке проекта `docker-compose up -d`;
--   Инициализируем сервер:
-    -   при запущенном контейнере в папке проекта запускаем команду `docker-compose exec web bash`;
-    -   запускаем сборку `composer install`.
-
-## Ошибка докера
-
-В случае ошибки такого вида:
-
-    Error response from daemon: pull access denied for nginx, repository does not exist or may require 'docker login': denied:
-    <html>
-    <body>
-    <h1>403 Forbidden</h1>
-    Since Docker is a US company, we must comply with US export control regulations.
-    In an effort to comply with these, we now block all IP addresses that are located in Cuba, Iran, North Korea, Republic of Crimea, Sudan, and Syria.
-    If you are not in one of these cities, countries, or regions and are blocked, please reach out to https://hub.docker.com/support/contact/
-    </body>
-    </html>
-
-Нужно использовать прокси сервер
-
-### Как его подключить
-
-1. через конфиг докера (как зеркало docker.io)
-
-    конфиг расположен в
-
-    | операционная система     |          путь к файлу конфигурации          |
-    | ------------------------ | :-----------------------------------------: |
-    | Linux, обычная установка |           /etc/docker/daemon.json           |
-    | Linux, режим rootless    |        ~/.config/docker/daemon.json         |
-    | Windows                  |  C:\ProgramData\docker\config\daemon.json   |
-    | Windows с Docker Desktop | C:\Users\<Пользователь>\.docker\daemon.json |
-
-    конфиг:
-    { "registry-mirrors" : [ "https://dockerhub.timeweb.cloud" ] }
-
-    чтобы конфиг применился потребуется перезапустить конфигурацию:
-    systemctl reload docker
-
-
-    теперь при попытке загрузки образа, Docker будет сначала пытаться использовать прокси.
-
-1. явное указание адреса
-
-    ```
-    docker pull dockerhub.timeweb.cloud/library/alpine:latest
-
-    docker pull dockerhub.timeweb.cloud/openresty/openresty:latest
-    ```
-
-## Описание записи
-
--   name -  почта создателя;
--   text - Текст комментария;
--   date - Дата создания комментария в строковом формате(выбирается создателем).
+# Техническое задание
 
 ## Стек
 
@@ -87,3 +26,15 @@
 -   использование валидации почты при вводе для пользователя (с отображением ошибки), а также на сервере;
 -   использование адаптивной верстки;
 -   использование jQuery.
+
+# Ход выполнения
+
+- Удаление как таковое в приложении не предусмотрено, вместо него сообщения и пользователи могут быть либо активными, либо нет. При удалении комментария он становится неактивным и больше не индексируется на странице комментариев.
+  Для добавления и удаления комментария использован AJAX. При добавлении комментария происходит перенаправление на первую страницу с заданными пользователем параметрами сортировки. Без перезагрузики страницы была идея добавлять на текущую страницу новые комментарии через AJAX, но не хватило времени на реализацию. Delete полностью функционирует без перезагрузки старницы.
+  Не была добавлена валидация длины комментария.
+  Предполагается добавление загрузки изображений для иконок пользователей.
+- Постраничный просмотр имеется.
+- Сортировка по id сообщения и дате добавления в порядке возрастания и убывания предусмотрена.
+- Есть страницы авторизации и регистрации, где предусмотрена валидация для уже существующей почты и прочая валидация на стороне как клиента, так и сервера.
+- Приложение полностью адаптивно.
+- Использован jQuery AJAX для добавления, удаления записей. Также jQuery использован для ошибки при подтверждении пароля.

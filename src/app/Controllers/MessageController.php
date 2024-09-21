@@ -14,8 +14,12 @@ class MessageController extends BaseController
 
     public function getActiveUserMessages($page = 1)
     {
-        $sort = $this->request->getGet('sort') ?? 'id';
-        $order = $this->request->getGet('order') ?? 'asc';
+        $sort = $this->request->getGet('sort') ?? 'publication_date';
+        $order = $this->request->getGet('order') ?? 'desc';
+
+        if ($this->request->getGet('sort') === null || $this->request->getGet('order') === null) {
+            return redirect()->to("/messages/{$page}?sort=publication_date&order=desc");
+        }
 
         $user = new User();
         $message = new Message();
@@ -26,7 +30,7 @@ class MessageController extends BaseController
         $perPage = 3;
         $offset = ($page - 1) * $perPage;
 
-        $messages = $message->select('user.username, user.userimage, message.id, message.content, message.publication_date, message.is_active')
+        $messages = $message->select('user.username, user.userimage, message.user_id, message.id, message.content, message.publication_date, message.is_active')
             ->join('user', 'user.id = message.user_id')
             ->whereIn('message.user_id', $activeUserIds)
             ->where('message.is_active', 1)
@@ -42,7 +46,7 @@ class MessageController extends BaseController
 
         $currentUser = $this->session->get('user');
 
-        return view('welcome_message', [
+        return view('comments', [
             'messages' => $messages,
             'users' => $activeUsers,
             'currentPage' => $page,
@@ -53,13 +57,30 @@ class MessageController extends BaseController
         ]);
     }
 
+    public function checkAuth()
+    {
+        $session = session();
+
+        if ($session->has('user')) {
+            return $this->response->setJSON(['status' => 'authorized']);
+        } else {
+            return $this->response->setJSON(['status' => 'unauthorized']);
+        }
+    }
 
     public function addMessage()
     {
+        $session = session();
+        $currentUser = $session->get('user');
+
+        if (!$currentUser) {
+            return $this->response->setJSON(['status' => 'unauthorized']);
+        }
+
         $message = new Message();
 
         $data = [
-            'user_id' => $this->request->getPost('user_id'),
+            'user_id' => $currentUser['id'],
             'content' => $this->request->getPost('content'),
             'publication_date' => date('Y-m-d H:i:s')
         ];
@@ -73,10 +94,8 @@ class MessageController extends BaseController
     {
         $message = new Message();
 
-        // Обновление поля is_active
         $message->update($id, ['is_active' => 0]);
 
-        // Возвращаем JSON ответ для успешного запроса
         return $this->response->setJSON(['status' => 'success']);
     }
 }

@@ -1,0 +1,41 @@
+img.user-img {
+    border-radius: 50%;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: rgba(255, 255, 255, 0.80) !important; /* Цвет при наведении */
+}
+
+.navbar-text {
+    color: white !important;
+}
+
+.alert-danger ul, p {
+    margin-bottom: 0 !important;
+}
+
+.after-submit {
+    margin-top: 8px;
+}
+
+@media (max-width: 576px) {
+    .delete-button {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .delete-button {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 769px) {
+    .delete-button {
+        font-size: 16px;
+    }
+}
